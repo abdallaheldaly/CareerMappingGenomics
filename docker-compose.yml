@@ -1,0 +1,56 @@
+version: "3.9"
+
+# ─────────────────────────────────────────────────────────────────────
+# CareerMappingGenomics — Docker Compose
+#
+# Usage:
+#   docker-compose up pipeline     # Run full training pipeline
+#   docker-compose up api          # Start REST API server
+#   docker-compose up tests        # Run test suite
+#   docker-compose up demo         # Quick demo run
+# ─────────────────────────────────────────────────────────────────────
+
+services:
+
+  # ── Full pipeline: generate data + train + inference + plots ──────
+  pipeline:
+    build: .
+    image: careermapping:v1
+    volumes:
+      - ./output:/app/output
+      - ./data:/app/data
+    command: python main.py --samples 1000 --epochs 20
+    environment:
+      - PYTHONUNBUFFERED=1
+      - MPLBACKEND=Agg
+
+  # ── Quick demo (300 samples, 5 epochs) ────────────────────────────
+  demo:
+    build: .
+    image: careermapping:v1
+    volumes:
+      - ./output:/app/output
+    command: python main.py --quick
+
+  # ── REST API server ───────────────────────────────────────────────
+  api:
+    build: .
+    image: careermapping:v1
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./src/models:/app/src/models   # Load saved checkpoint
+    command: python src/api/app.py
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  # ── Test suite ────────────────────────────────────────────────────
+  tests:
+    build: .
+    image: careermapping:v1
+    command: python tests/test_all.py

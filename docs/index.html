@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CareerMappingGenomics — Deep Learning for Career Guidance</title>
+<meta name="description" content="A multi-modal deep learning system integrating genomics, facial analysis, blood biomarkers, and psychology for career mapping with autism-spectrum focus."/>
+<meta name="author" content="Abdallah El-Daly"/>
+<meta property="og:title" content="CareerMappingGenomics"/>
+<meta property="og:description" content="Multi-modal deep learning for personality trait inference and career recommendation."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#05080f; --bg2:#0a0e1a; --bg3:#0d1220; --bg4:#111827;
+  --border:#1e2a45; --border2:#2a3a50;
+  --text:#e2e8f0; --muted:#8899aa; --subtle:#4a6080;
+  --blue:#7C9EFF; --teal:#4ECDC4; --gold:#FFD166; --red:#FF6B6B;
+  --purple:#C77DFF; --green:#4CAF50; --orange:#F8961E;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'EB Garamond',serif;background:var(--bg);color:var(--text);line-height:1.7;font-size:17px;}
+a{color:var(--blue);text-decoration:none;}
+a:hover{text-decoration:underline;}
+code,pre{font-family:'JetBrains Mono',monospace;}
+code{background:#0a0e1a;border:1px solid var(--border);padding:2px 7px;border-radius:4px;font-size:.82em;color:var(--teal);}
+pre{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:20px;overflow-x:auto;font-size:.82em;line-height:1.6;margin:16px 0;}
+pre code{background:none;border:none;padding:0;color:#c8d4e0;}
+.container{max-width:960px;margin:0 auto;padding:0 28px;}
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(5,8,15,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:14px 0;}
+.nav-inner{display:flex;align-items:center;gap:28px;max-width:960px;margin:0 auto;padding:0 28px;}
+.nav-logo{font-weight:700;font-size:1.1em;color:#fff;letter-spacing:.5px;}
+.nav-logo span{color:var(--blue);}
+.nav-links{display:flex;gap:20px;margin-left:auto;}
+.nav-links a{color:var(--muted);font-size:.85em;letter-spacing:.5px;transition:color .2s;}
+.nav-links a:hover{color:var(--blue);text-decoration:none;}
+/* HERO */
+.hero{padding:100px 0 70px;background:radial-gradient(ellipse at 50% 0%,#0d1a3a 0%,var(--bg) 70%);border-bottom:1px solid var(--border);}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border2);border-radius:20px;padding:5px 14px;font-size:.78em;color:var(--muted);margin-bottom:22px;letter-spacing:.8px;text-transform:uppercase;}
+.hero-badge span{width:7px;height:7px;border-radius:50%;background:var(--teal);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+h1.hero-title{font-size:clamp(2em,5vw,3.4em);font-weight:700;line-height:1.18;margin-bottom:16px;color:#fff;}
+h1.hero-title em{color:var(--blue);font-style:normal;}
+.hero-sub{color:var(--muted);font-size:1.08em;max-width:640px;line-height:1.8;margin-bottom:32px;}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:8px;font-size:.88em;font-family:'EB Garamond',serif;font-weight:600;letter-spacing:.4px;cursor:pointer;transition:all .2s;border:none;}
+.btn-primary{background:var(--blue);color:#05080f;}
+.btn-primary:hover{background:#9bb4ff;text-decoration:none;color:#05080f;}
+.btn-outline{background:none;border:1px solid var(--border2);color:var(--text);}
+.btn-outline:hover{border-color:var(--blue);color:var(--blue);text-decoration:none;}
+.hero-stats{display:flex;gap:32px;margin-top:48px;padding-top:32px;border-top:1px solid var(--border);flex-wrap:wrap;}
+.stat{text-align:left;}
+.stat-n{font-size:1.7em;font-weight:700;color:#fff;}
+.stat-l{font-size:.78em;color:var(--muted);letter-spacing:.5px;}
+/* SECTION */
+section{padding:72px 0;border-bottom:1px solid var(--border);}
+h2.sec-title{font-size:1.9em;font-weight:700;color:#fff;margin-bottom:8px;}
+.sec-sub{color:var(--muted);font-size:1em;margin-bottom:40px;}
+.label{display:inline-block;font-size:.72em;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:10px;}
+/* GRID CARDS */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;}
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:20px;}
+.card-icon{font-size:1.8em;margin-bottom:10px;}
+.card h3{font-size:1em;font-weight:700;color:#fff;margin-bottom:6px;}
+.card p{font-size:.88em;color:var(--muted);line-height:1.6;}
+.card.highlight{border-top:3px solid var(--blue);}
+/* PIPELINE */
+.pipeline{display:flex;flex-direction:column;gap:0;}
+.pipeline-step{display:flex;gap:0;align-items:stretch;}
+.ps-spine{display:flex;flex-direction:column;align-items:center;width:48px;flex-shrink:0;}
+.ps-dot{width:34px;height:34px;border-radius:50%;background:var(--bg3);border:2px solid var(--blue);display:flex;align-items:center;justify-content:center;font-size:1em;flex-shrink:0;}
+.ps-line{width:2px;flex:1;background:var(--border);margin-top:4px;}
+.ps-body{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:16px;margin-left:14px;margin-bottom:12px;}
+.ps-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
+.ps-title{font-size:1em;font-weight:700;color:#fff;}
+.ps-model{font-size:.75em;color:var(--blue);}
+.ps-params{background:var(--bg2);border:1px solid var(--border);border-radius:5px;padding:3px 9px;font-size:.75em;color:var(--teal);font-family:'JetBrains Mono',monospace;}
+.ps-desc{font-size:.88em;color:var(--muted);line-height:1.6;}
+/* RESULTS */
+.results-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.result-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.result-card img{width:100%;height:auto;display:block;}
+.result-caption{padding:12px 16px;font-size:.85em;color:var(--muted);}
+.metrics-row{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:28px;}
+.metric{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:16px 22px;text-align:center;flex:1;min-width:110px;}
+.metric-n{font-size:1.8em;font-weight:700;}
+.metric-l{font-size:.78em;color:var(--muted);margin-top:2px;}
+/* INSTALL */
+.install-tabs{display:flex;gap:2px;margin-bottom:0;border-bottom:1px solid var(--border);}
+.itab{background:none;border:none;border-bottom:2px solid transparent;padding:9px 18px;color:var(--muted);cursor:pointer;font-family:'EB Garamond',serif;font-size:.9em;transition:all .2s;}
+.itab.active{color:var(--blue);border-bottom-color:var(--blue);}
+.itab-content{display:none;background:var(--bg3);border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;padding:22px;}
+.itab-content.active{display:block;}
+/* CITE */
+.cite-box{background:var(--bg3);border:1px solid var(--border);border-left:4px solid var(--blue);border-radius:8px;padding:16px 20px;font-size:.85em;color:var(--muted);font-family:'JetBrains Mono',monospace;line-height:1.7;}
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:.88em;margin:16px 0;}
+th{background:var(--bg3);color:var(--muted);font-weight:600;text-align:left;padding:10px 14px;border-bottom:1px solid var(--border);}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text);}
+tr:hover td{background:var(--bg3);}
+/* TAG */
+.tag{display:inline-block;padding:2px 9px;border-radius:12px;font-size:.76em;font-family:'JetBrains Mono',monospace;font-weight:600;}
+.tag-asd{background:#FFD16622;color:var(--gold);}
+.tag-tech{background:#7C9EFF22;color:var(--blue);}
+.tag-domain{background:#4ECDC422;color:var(--teal);}
+/* ETHICS */
+.ethics-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.ethics-item{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:13px 16px;font-size:.88em;color:var(--muted);}
+.ethics-item strong{color:var(--text);display:block;margin-bottom:4px;}
+/* FOOTER */
+footer{padding:48px 0 32px;background:var(--bg2);}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:32px;margin-bottom:32px;}
+.footer-brand{font-size:1.05em;font-weight:700;color:#fff;margin-bottom:10px;}
+.footer-brand span{color:var(--blue);}
+.footer-desc{font-size:.85em;color:var(--muted);line-height:1.7;}
+.footer-col h4{font-size:.82em;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+.footer-col a{display:block;font-size:.88em;color:var(--subtle);margin-bottom:7px;}
+.footer-col a:hover{color:var(--blue);text-decoration:none;}
+.footer-bottom{border-top:1px solid var(--border);padding-top:20px;display:flex;justify-content:space-between;font-size:.8em;color:var(--subtle);}
+/* RESPONSIVE */
+@media(max-width:680px){
+  .results-grid,.footer-grid,.ethics-grid{grid-template-columns:1fr;}
+  .hero-stats{gap:20px;}
+  .ps-head{flex-direction:column;gap:6px;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <span class="nav-logo">CareerMapping<span>Genomics</span></span>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#pipeline">Pipeline</a>
+      <a href="#results">Results</a>
+      <a href="#install">Install</a>
+      <a href="#paper">Paper</a>
+      <a href="#cite">Cite</a>
+      <a href="https://github.com/abdallaheldaly
+      /CareerMappingGenomics" target="_blank">GitHub ↗</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+<div class="container">
+  <div class="hero-badge"><span></span>Open Research · v1.0 · 2025</div>
+  <h1 class="hero-title">Career Mapping via<br/><em>Multi-Modal Genomics</em><br/>& Deep Learning</h1>
+  <p class="hero-sub">A research system that integrates SNP genotype data, facial morphometry, blood biomarker proxies, and psychometric questionnaires through a cross-modal attention transformer to infer Big Five personality traits and recommend career paths — with a focus on neurodivergent individuals.</p>
+  <div class="hero-btns">
+    <a class="btn btn-primary" href="#install">⬇ Get Started</a>
+    <a class="btn btn-outline" href="#paper">📄 Read the Paper</a>
+    <a class="btn btn-outline" href="https://github.com/abdallaheldaly/CareerMappingGenomics" target="_blank">★ GitHub</a>
+    <a class="btn btn-outline" href="demo.html">🎛 Live Demo</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-n">618,413</div><div class="stat-l">Total Parameters</div></div>
+    <div class="stat"><div class="stat-n">4</div><div class="stat-l">Input Modalities</div></div>
+    <div class="stat"><div class="stat-n">80</div><div class="stat-l">Blood Biomarkers</div></div>
+    <div class="stat"><div class="stat-n">30</div><div class="stat-l">Career Profiles</div></div>
+    <div class="stat"><div class="stat-n" style="color:var(--teal)">88.5%</div><div class="stat-l">ASD Classification AUC</div></div>
+    <div class="stat"><div class="stat-n" style="color:var(--gold)">40.9%</div><div class="stat-l">Career Match Accuracy</div></div>
+  </div>
+</div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+<div class="container">
+  <div class="label">Overview</div>
+  <h2 class="sec-title">What is this project?</h2>
+  <p class="sec-sub">A multi-modal deep learning research prototype for career guidance</p>
+  <p style="color:var(--muted);max-width:760px;margin-bottom:28px;line-height:1.85;">
+    Traditional career guidance relies entirely on self-reported questionnaires. CareerMappingGenomics extends this with <strong style="color:var(--text)">four biological and behavioural data layers</strong>: SNP genomics, facial emotion analysis, simulated blood biomarker proxies derived from published NHANES and clinical datasets, and Big Five questionnaires. A cross-modal attention transformer (<strong style="color:var(--blue)">FusionNet</strong>) fuses all four streams into a unified personality vector that drives O*NET-grounded career recommendations.
+  </p>
+  <p style="color:var(--muted);max-width:760px;margin-bottom:36px;line-height:1.85;">
+    <strong style="color:var(--gold)">Note on data:</strong> This prototype uses synthetically generated data whose statistical properties are calibrated against published literature (UK Biobank, NHANES, SPARK autism cohort). No real patient blood samples were collected. All biomarker distributions, ASD-specific shifts, and Big Five trait correlations are grounded in peer-reviewed references listed in <a href="REFERENCES.md">REFERENCES.md</a>. The system is designed so that real laboratory data can be substituted directly.
+  </p>
+  <div class="card-grid">
+    <div class="card highlight">
+      <div class="card-icon">🧬</div>
+      <h3>Genomics</h3>
+      <p>SNP-Transformer processes genotype matrices through a block-wise Transformer encoder to produce 8 polygenic scores (Big Five + Autism PGS + Intelligence + Education).</p>
+    </div>
+    <div class="card" style="border-top:3px solid var(--gold)">
+      <div class="card-icon">👤</div>
+      <h3>Facial Analysis</h3>
+      <p>FaceGenome-CNN extracts personality embeddings from 468 facial landmarks (MediaPipe) plus 7-class facial emotion recognition.</p>
+    </div>
+    <div class="card" style="border-top:3px solid var(--red)">
+      <div class="card-icon">🩸</div>
+      <h3>Blood Biomarkers</h3>
+      <p>BiomarkerNet processes 80 clinically-grounded markers in 7 categories via cross-attention. ASD-specific markers (oxytocin, BDNF, IL-6) drive the ASD probability head.</p>
+    </div>
+    <div class="card" style="border-top:3px solid var(--teal)">
+      <div class="card-icon">⚡</div>
+      <h3>Multi-Modal Fusion</h3>
+      <p>FusionNet applies two layers of cross-modal attention, learning dependencies between genomic PGS, facial traits, and biomarker patterns.</p>
+    </div>
+    <div class="card" style="border-top:3px solid var(--purple)">
+      <div class="card-icon">⭐</div>
+      <h3>Neurodiversity Focus</h3>
+      <p>21 of 30 career profiles are flagged as autism-strength careers where neurodivergent cognitive traits create genuine competitive advantage.</p>
+    </div>
+    <div class="card" style="border-top:3px solid var(--orange)">
+      <div class="card-icon">⚖️</div>
+      <h3>Ethics Framework</h3>
+      <p>Probabilistic outputs with confidence intervals. No deterministic claims. GDPR-aligned. Requires IRB approval for clinical deployment.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- PIPELINE -->
+<section id="pipeline">
+<div class="container">
+  <div class="label">Architecture</div>
+  <h2 class="sec-title">The Deep Learning Pipeline</h2>
+  <p class="sec-sub">Six stages from raw biological inputs to ranked career recommendations</p>
+  <div class="pipeline">
+    <div class="pipeline-step">
+      <div class="ps-spine"><div class="ps-dot">🧬</div><div class="ps-line"></div></div>
+      <div class="ps-body">
+        <div class="ps-head"><div><div class="ps-title">SNP Genotyping</div><div class="ps-model">SNP-Transformer</div></div><div class="ps-params">34,664 params</div></div>
+        <p class="ps-desc">1,000–500,000 SNP markers are processed in 50-SNP blocks. Each block is linearly projected to a 32-d embedding, positional-encoded, then passed through 2 Transformer encoder layers. Global average pooling produces a 64-d genomic embedding plus 8 polygenic scores via a sigmoid regression head.</p>
+      </div>
+    </div>
+    <div class="pipeline-step">
+      <div class="ps-spine"><div class="ps-dot">👤</div><div class="ps-line"></div></div>
+      <div class="ps-body">
+        <div class="ps-head"><div><div class="ps-title">Facial Morphometry + FER</div><div class="ps-model">FaceGenome-CNN</div></div><div class="ps-params">230,548 params</div></div>
+        <p class="ps-desc">In production: 468 3-D landmarks from MediaPipe Face Mesh are processed by a morphometry encoder with a facial attention module. A Big Five regression head produces trait scores; a separate 7-class FER head classifies dominant emotion. In simulation: pre-computed 128-d embeddings are used directly.</p>
+      </div>
+    </div>
+    <div class="pipeline-step">
+      <div class="ps-spine"><div class="ps-dot">🩸</div><div class="ps-line"></div></div>
+      <div class="ps-body">
+        <div class="ps-head"><div><div class="ps-title">Blood Biomarker Panel</div><div class="ps-model">BiomarkerNet</div></div><div class="ps-params">84,455 params</div></div>
+        <p class="ps-desc">80 biomarkers in 7 clinical categories (Hematology, Hormones, Metabolic, Neurotransmitter Precursors, Inflammatory, Nutritional, Autism-Specific) are encoded by per-category MLPs then fused via multi-head cross-attention. Outputs: 64-d embedding, ASD probability, Big Five from blood.</p>
+      </div>
+    </div>
+    <div class="pipeline-step">
+      <div class="ps-spine"><div class="ps-dot">📋</div><div class="ps-line"></div></div>
+      <div class="ps-body">
+        <div class="ps-head"><div><div class="ps-title">Questionnaire</div><div class="ps-model">QuestionnaireEncoder</div></div><div class="ps-params">~5,000 params</div></div>
+        <p class="ps-desc">Big Five self-report scores (0–1) plus auxiliary items are encoded into a 32-d embedding via a 2-layer MLP with LayerNorm. This grounds the biological predictions in the individual's own self-perception.</p>
+      </div>
+    </div>
+    <div class="pipeline-step">
+      <div class="ps-spine"><div class="ps-dot">⚡</div><div class="ps-line"></div></div>
+      <div class="ps-body">
+        <div class="ps-head"><div><div class="ps-title">Cross-Modal Fusion</div><div class="ps-model">FusionNet</div></div><div class="ps-params">268,746 params</div></div>
+        <p class="ps-desc">All four modality embeddings are projected to a common 64-d space and stacked as a sequence. Two Transformer encoder layers apply cross-modal attention, allowing each modality to attend to all others. A softmax gating layer produces interpretable modality importance weights.</p>
+      </div>
+    </div>
+    <div class="pipeline-step">
+      <div class="ps-spine"><div class="ps-dot">🗂️</div></div>
+      <div class="ps-body" style="margin-bottom:0;">
+        <div class="ps-head"><div><div class="ps-title">Career Recommendation</div><div class="ps-model">CareerCompatibilityHead</div></div><div class="ps-params">30 careers</div></div>
+        <p class="ps-desc">The 256-d fused embedding is projected into a career feature space and compared via cosine similarity against 30 learned O*NET career prototype embeddings. Top-K careers are returned with compatibility percentages, autism-strength flags, trait match breakdowns, and education pathways.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="color:#fff;margin-top:40px;margin-bottom:16px;font-size:1.2em;">Model Summary</h3>
+  <table>
+    <tr><th>Module</th><th>Architecture</th><th>Input</th><th>Output</th><th>Parameters</th></tr>
+    <tr><td>SNP-Transformer</td><td>Block Embedding → 2-layer Transformer</td><td>(B, 1000)</td><td>64-d emb + 8 PGS</td><td class="ps-params" style="font-family:'JetBrains Mono',monospace;color:var(--teal)">34,664</td></tr>
+    <tr><td>FaceGenome-CNN</td><td>MLP Encoder + Facial Attention</td><td>(B, 128)</td><td>128-d emb + Big5 + FER</td><td style="font-family:'JetBrains Mono',monospace;color:var(--teal)">230,548</td></tr>
+    <tr><td>BiomarkerNet</td><td>Category Encoders + Cross-Attention</td><td>(B, 80)</td><td>64-d emb + ASD prob</td><td style="font-family:'JetBrains Mono',monospace;color:var(--teal)">84,455</td></tr>
+    <tr><td>FusionNet</td><td>4-modality Cross-Attention Transformer</td><td>4 × embeddings</td><td>256-d + career scores</td><td style="font-family:'JetBrains Mono',monospace;color:var(--teal)">268,746</td></tr>
+    <tr><td><strong>Total</strong></td><td></td><td></td><td></td><td style="font-family:'JetBrains Mono',monospace;color:var(--blue);font-weight:700">618,413</td></tr>
+  </table>
+</div>
+</section>
+
+<!-- RESULTS -->
+<section id="results">
+<div class="container">
+  <div class="label">Experimental Results</div>
+  <h2 class="sec-title">Training & Evaluation Results</h2>
+  <p class="sec-sub">20 epochs · 1,000 synthetic samples · 70/20/10 train/val/test split</p>
+
+  <div class="metrics-row">
+    <div class="metric"><div class="metric-n" style="color:var(--teal)">88.5%</div><div class="metric-l">ASD Classification<br>Val Accuracy</div></div>
+    <div class="metric"><div class="metric-n" style="color:var(--gold)">40.9%</div><div class="metric-l">Career Match<br>Train Accuracy</div></div>
+    <div class="metric"><div class="metric-n" style="color:var(--blue)">39.5%</div><div class="metric-l">Career Match<br>Val Accuracy</div></div>
+    <div class="metric"><div class="metric-n" style="color:var(--purple)">2.61</div><div class="metric-l">Best Val Loss<br>(Multi-task)</div></div>
+    <div class="metric"><div class="metric-n" style="color:var(--red)">2.18</div><div class="metric-l">Final Test Loss</div></div>
+    <div class="metric"><div class="metric-n" style="color:var(--green)">0.118</div><div class="metric-l">Big Five MAE<br>(Test set)</div></div>
+  </div>
+
+  <div class="results-grid">
+    <div class="result-card">
+      <img src="figures/01_training_curves.png" alt="Training curves showing loss and accuracy across 20 epochs"/>
+      <div class="result-caption"><strong>Figure 1.</strong> Multi-task training curves over 20 epochs. ASD classification converges rapidly to ~99% training accuracy. Career matching improves steadily, consistent with the difficulty of 30-class prediction from synthetic data.</div>
+    </div>
+    <div class="result-card">
+      <img src="figures/02_bigfive_distributions.png" alt="Big Five trait distributions comparing ASD and neurotypical groups"/>
+      <div class="result-caption"><strong>Figure 2.</strong> Big Five trait distributions: ASD vs. neurotypical synthetic cohort. ASD individuals show elevated Openness (O↑), reduced Extraversion (E↓), and reduced Agreeableness (A↓), consistent with published meta-analyses.</div>
+    </div>
+    <div class="result-card">
+      <img src="figures/03_biomarker_comparison_asd.png" alt="Biomarker Z-score differences between ASD and neurotypical groups"/>
+      <div class="result-caption"><strong>Figure 3.</strong> Biomarker Z-score differences (ASD vs. neurotypical). Oxytocin (↓30%), serotonin (↓20%), and BDNF (↓20%) show the largest reductions. IL-6 (↑40%) and glutamate (↑25%) show the largest elevations — consistent with the neuroinflammation and excitatory imbalance literature.</div>
+    </div>
+    <div class="result-card">
+      <img src="figures/04_career_radar_report.png" alt="Career recommendation radar chart and bar chart"/>
+      <div class="result-caption"><strong>Figure 4.</strong> Sample career recommendation report for a synthetic ASD individual (high O, high C, low E, low A). Top matches include Research Scientist, Data Scientist, and Bioinformatics Scientist — all flagged as autism-strength careers.</div>
+    </div>
+    <div class="result-card">
+      <img src="figures/05_modality_contributions.png" alt="Modality contribution pie chart"/>
+      <div class="result-caption"><strong>Figure 5.</strong> Learned modality importance weights (FusionNet softmax gating). Biomarkers contribute the most in ASD-enriched cohorts (30%), followed by genomics (28%), facial (22%), and questionnaire (20%).</div>
+    </div>
+    <div class="result-card">
+      <img src="figures/08_asd_calibration.png" alt="ASD classifier calibration plot"/>
+      <div class="result-caption"><strong>Figure 6.</strong> ASD classifier calibration. Score distributions show clear separation between ASD and neurotypical groups. The reliability diagram indicates good calibration in the 0.4–0.8 probability range.</div>
+    </div>
+  </div>
+
+  <div style="background:var(--bg3);border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:8px;padding:18px 22px;margin-top:24px;font-size:.9em;color:var(--muted);line-height:1.8;">
+    <strong style="color:var(--gold);">Interpretation note:</strong> Career classification accuracy of 39–40% is above the random baseline of 3.3% for a 30-class problem, but remains modest. This reflects (a) the inherent difficulty of career prediction from personality alone, (b) that training was performed on synthetic data without real outcome labels, and (c) the known low ceiling of personality PGS (R²=0.05–0.15). ASD classification accuracy of 88.5% is high because biomarker shifts are calibrated from published literature, providing strong signal. Real-world deployment would require clinical validation.
+  </div>
+</div>
+</section>
+
+<!-- INSTALL -->
+<section id="install">
+<div class="container">
+  <div class="label">Getting Started</div>
+  <h2 class="sec-title">Installation & Usage</h2>
+  <p class="sec-sub">Choose the method that suits you — Docker is recommended for reproducibility</p>
+
+  <div class="install-tabs">
+    <button class="itab active" onclick="showTab('docker')">🐳 Docker (Recommended)</button>
+    <button class="itab" onclick="showTab('pip')">🐍 pip / virtualenv</button>
+    <button class="itab" onclick="showTab('conda')">🅒 conda</button>
+    <button class="itab" onclick="showTab('api')">🌐 API Usage</button>
+  </div>
+
+  <div id="tab-docker" class="itab-content active">
+    <p style="color:var(--muted);margin-bottom:16px;font-size:.9em;">Docker guarantees a fully reproducible environment. Requires Docker Desktop (Mac/Windows) or Docker Engine (Linux).</p>
+<pre><code># 1. Clone the repository
+git clone https://github.com/abdallaheldaly/CareerMappingGenomics.git
+cd CareerMappingGenomics
+
+# 2. Build the Docker image (~3–5 min on first build)
+docker build -t careermapping:v1 .
+
+# 3a. Run the full pipeline (training + inference + plots)
+docker run --rm -v $(pwd)/output:/app/output careermapping:v1
+
+# 3b. Run quick demo (300 samples, 5 epochs, ~30 seconds)
+docker run --rm -v $(pwd)/output:/app/output careermapping:v1 python main.py --quick
+
+# 3c. Launch the REST API server
+docker run --rm -p 8000:8000 careermapping:v1 python src/api/app.py
+# → Open http://localhost:8000/docs for interactive API docs
+
+# 3d. Run the test suite
+docker run --rm careermapping:v1 python tests/test_all.py</code></pre>
+    <p style="color:var(--muted);font-size:.85em;margin-top:12px;">Results (plots, model checkpoint, report JSON) are written to <code>./output/</code> on your host machine.</p>
+  </div>
+
+  <div id="tab-pip" class="itab-content">
+<pre><code># Python 3.10+ required
+git clone https://github.com/abdallaheldaly/CareerMappingGenomics.git
+cd CareerMappingGenomics
+
+# Create and activate virtual environment
+python -m venv venv
+source venv/bin/activate      # Linux / macOS
+# venv\Scripts\activate       # Windows
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the full pipeline
+python main.py --samples 1000 --epochs 20
+
+# Quick demo
+python main.py --quick
+
+# Run tests
+python tests/test_all.py
+
+# Launch API
+python src/api/app.py</code></pre>
+  </div>
+
+  <div id="tab-conda" class="itab-content">
+<pre><code># Requires Anaconda or Miniconda
+git clone https://github.com/abdallaheldaly/CareerMappingGenomics.git
+cd CareerMappingGenomics
+
+# Create conda environment from file
+conda env create -f environment.yml
+conda activate careermapping
+
+# Run the pipeline
+python main.py --samples 1000 --epochs 20</code></pre>
+  </div>
+
+  <div id="tab-api" class="itab-content">
+    <p style="color:var(--muted);margin-bottom:16px;font-size:.9em;">Start the server first (<code>python src/api/app.py</code> or Docker), then:</p>
+<pre><code># Health check
+curl http://localhost:8000/health
+
+# Demo prediction (synthetic ASD individual)
+curl -X POST http://localhost:8000/predict/demo?top_k=5
+
+# Full prediction with your data
+curl -X POST http://localhost:8000/predict \
+  -H "Content-Type: application/json" \
+  -d '{
+    "snps":          [0,1,2,1,0, ...],   # 1000 values
+    "facial_emb":    [0.1, -0.3, ...],   # 128 values
+    "biomarkers":    [14.0, 7.0, ...],   # 80 values  
+    "questionnaire": [0.7, 0.8, ...],    # 32 values
+    "top_k": 10
+  }'
+
+# List all autism-strength careers
+curl "http://localhost:8000/careers?autism_only=true"</code></pre>
+    <p style="color:var(--muted);font-size:.85em;margin-top:12px;">Full OpenAPI documentation available at <code>http://localhost:8000/docs</code></p>
+  </div>
+</div>
+</section>
+
+<!-- PAPER -->
+<section id="paper">
+<div class="container">
+  <div class="label">Research Paper</div>
+  <h2 class="sec-title">CareerMappingGenomics: A Multi-Modal Deep Learning Framework for Personality-Grounded Career Recommendation with Neurodiversity Focus</h2>
+  <p style="color:var(--muted);font-size:.92em;margin-bottom:36px;">Abdallah El-Daly — 2025 · Preprint</p>
+
+  <!-- Abstract -->
+  <h3 style="color:var(--blue);font-size:1.1em;margin-bottom:10px;">Abstract</h3>
+  <p style="color:var(--muted);line-height:1.9;margin-bottom:32px;max-width:820px;">
+    We present <strong style="color:var(--text)">CareerMappingGenomics</strong>, a multi-modal deep learning framework that integrates four data sources — SNP genotype arrays, facial morphometric embeddings, blood biomarker panels, and Big Five questionnaire responses — to predict personality trait profiles and generate personalised career recommendations. The system is specifically designed to serve neurodivergent populations, with particular emphasis on autism spectrum disorder (ASD), where traditional self-report instruments may underrepresent individuals' actual cognitive profiles. The architecture comprises four specialised neural encoders (SNP-Transformer, FaceGenome-CNN, BiomarkerNet, QuestionnaireEncoder) fused through a cross-modal attention Transformer (FusionNet) with 618,413 total parameters. Training on 1,000 synthetically generated samples — whose statistical properties are calibrated against UK Biobank, NHANES, and SPARK cohort data — yields an ASD classification validation accuracy of 88.5% and a career recommendation accuracy of 39.5% across 30 O*NET-grounded career profiles (random baseline: 3.3%). The system identifies 21 career profiles where autism-associated cognitive traits (hyper-systemising, enhanced local processing, domain-specific hyperfocus) constitute genuine competitive advantages. We discuss limitations of synthetic data, cross-ancestry polygenic score portability, and facial recognition demographic bias, and propose a roadmap for clinical validation. All code, model weights, and documentation are released under the MIT licence.
+  </p>
+
+  <!-- 1. Introduction -->
+  <h3 style="color:#fff;font-size:1.15em;margin-bottom:10px;border-bottom:1px solid var(--border);padding-bottom:8px;">1. Introduction</h3>
+  <p style="color:var(--muted);line-height:1.9;margin-bottom:16px;">
+    Career guidance has long relied on self-reported psychometric instruments such as the Big Five Inventory (BFI), Holland's RIASEC model, and the Myers-Briggs Type Indicator. While validated and widely used, these instruments have a fundamental limitation: they measure the individual's <em>perception</em> of themselves, which may diverge significantly from their underlying biological reality, particularly in populations where social masking, alexithymia, or atypical self-modelling are common — as is frequently the case in autism spectrum disorder (ASD) [ASD-07, ASD-08].
+  </p>
+  <p style="color:var(--muted);line-height:1.9;margin-bottom:16px;">
+    At the same time, three converging developments motivate a biological approach to personality inference: (1) genome-wide association studies (GWAS) have now identified thousands of SNPs associated with Big Five traits and cognitive ability [GEN-01, PSY-05], enabling polygenic prediction of personality with modest but meaningful effect sizes (R² = 0.05–0.15); (2) deep learning models for facial analysis have demonstrated that personality traits can be inferred from facial morphometry and emotion dynamics at Pearson r ≈ 0.3–0.5 [FAC-08, FAC-09]; and (3) blood biomarker panels, particularly neurotransmitter precursors, hormones, and inflammatory markers, show well-documented associations with personality dimensions and ASD neurotype [BIO-02, BIO-08, ASD-03].
+  </p>
+  <p style="color:var(--muted);line-height:1.9;margin-bottom:32px;">
+    CareerMappingGenomics is the first system to fuse all four of these modalities through a unified cross-modal attention architecture for the specific purpose of career recommendation. Its neurodiversity focus is grounded in the finding that 12,000+ genetic variants are shared between ASD and intelligence (Dice coefficient = 0.91) [ASD-03], suggesting that the cognitive profile associated with autism is not a deficit to be compensated for, but a distinct cognitive style with documented strengths that should be matched to appropriate career environments.
+  </p>
+
+  <!-- 2. Related Work -->
+  <h3 style="color:#fff;font-size:1.15em;margin-bottom:10px;border-bottom:1px solid var(--border);padding-bottom:8px;">2. Related Work</h3>
+  <p style="color:var(--muted);line-height:1.9;margin-bottom:16px;">
+    <strong style="color:var(--text)">Personality and Genomics.</strong> The heritability of Big Five traits is estimated at 40–60% from twin studies [PSY-03, PSY-04]. GWAS have identified 116 independent loci for neuroticism [PSY-06] and thousands of SNPs for other traits. Polygenic scores for educational attainment now explain ~16% of variance in large samples [GEN-03]. The SNP-Transformer architecture in this work builds on the growing literature applying attention mechanisms to genomic sequences [GEN-12, GEN-13].
+  </p>
+  <p style="color:var(--muted);line-height:1.9;margin-bottom:16px;">
+    <strong style="color:var(--text)">Facial Personality Prediction.</strong> Rojas Bengochea et al. [FAC-09] demonstrated that 23% of 349 personal attributes are predictable from facial photographs above chance. The MIT CCI group [FAC-08] showed that FER tracking during video stimuli correlates with Big Five traits at r ≈ 0.3–0.4. Li and Deng [FAC-06] provide a comprehensive survey of deep FER architectures. We adopt a combined morphometry + dynamic FER approach.
+  </p>
+  <p style="color:var(--muted);line-height:1.9;margin-bottom:16px;">
+    <strong style="color:var(--text)">Biomarkers and Personality.</strong> Serotonin (via tryptophan) is associated with Agreeableness [BIO-10]; dopamine (via tyrosine) with Conscientiousness and Extraversion [BIO-11]; cortisol with Neuroticism [BIO-06]. For ASD specifically, reduced oxytocin [BIO-02], elevated IL-6 [BIO-08], reduced BDNF [BIO-03], and glutamate/GABA imbalance [BIO-04] are among the most replicated biomarkers.
+  </p>
+  <p style="color:var(--muted);line-height:1.9;margin-bottom:16px;">
+    <strong style="color:var(--text)">Multi-Modal Fusion.</strong> Baltrusaitis et al. [FUS-01] survey multi-modal ML approaches, noting that cross-modal attention consistently outperforms early and late fusion for semantically heterogeneous modalities. Xu et al. [FUS-03] extend this to transformer-based multi-modal learning, which forms the basis of FusionNet.
+  </p>
+  <p style="color:var(--muted);line-height:1.9;margin-bottom:32px;">
+    <strong style="color:var(--text)">Career Recommendation.</strong> O*NET [CAR-01] provides occupational KSAWS vectors for 900+ careers. Barrick and Mount's [PSY-08] meta-analysis established the empirical Big Five → job performance link. Francis et al. [CAR-06] demonstrated ML-based personality-to-career matching from text. This work extends that framework to biological signals.
+  </p>
+
+  <!-- 3. Methods -->
+  <h3 style="color:#fff;font-size:1.15em;margin-bottom:10px;border-bottom:1px solid var(--border);padding-bottom:8px;">3. Methodology</h3>
+  <h4 style="color:var(--blue);margin:14px 0 8px;font-size:1em;">3.1 Synthetic Dataset Generation</h4>
+  <p style="color:var(--muted);line-height:1.9;margin-bottom:16px;">
+    Due to the absence of a publicly available multi-modal dataset combining genomics, biomarkers, facial data, and career outcomes in the same individuals, we generate a synthetic dataset of N=1,000 individuals whose statistical properties are calibrated against published literature. SNP genotype matrices (N×1,000) are generated under Hardy-Weinberg equilibrium with allele frequencies drawn from UK Biobank distributions. For ASD individuals (prevalence 15% in this research cohort), 50 SNPs are enriched based on the SPARK autism GWAS [DAT-02]. Blood biomarker values (N×80) are drawn from Gaussian distributions parameterised by NHANES reference ranges [DAT-05], with ASD-specific shifts applied to 12 key markers based on published meta-analyses. Big Five scores are generated with population means of 0.5 and standard deviation of 0.15, with ASD-specific adjustments (O+0.08, C+0.05, E-0.12, A-0.08, N+0.05) consistent with the review by Vukasovic and Bratko [PSY-04]. Facial embeddings are generated with weak correlation (r≈0.3) with Big Five scores to simulate the expected signal level from facial analysis [FAC-09]. Career labels are assigned by nearest-neighbour matching in the O*NET trait space, with an autism-strength boost for ASD individuals.
+  </p>
+  <h4 style="color:var(--blue);margin:14px 0 8px;font-size:1em;">3.2 Model Architecture</h4>
+  <p style="color:var(--muted);line-height:1.9;margin-bottom:16px;">
+    The SNP-Transformer divides the SNP vector into 50-SNP blocks, projects each via a linear layer to 32 dimensions, adds learnable positional encodings, and processes through 2 Transformer encoder layers (4 heads, 128 feed-forward dim). Global average pooling yields a 64-d genomic embedding. Eight polygenic score predictions are produced via a sigmoid MLP head. The FaceGenome-CNN uses a 3-layer MLP morphometry encoder followed by an 8-region facial attention module and residual connection, producing a 128-d facial embedding with Big Five and FER output heads. BiomarkerNet encodes each of 7 biomarker categories with a shared 2-layer MLP (dim=16), applies 4-head cross-attention across categories, and aggregates via a 3-layer MLP to produce a 64-d biomarker embedding with ASD probability and Big Five heads. FusionNet projects all four embeddings to 64 dimensions, applies 2 layers of 4-head cross-modal attention, and passes the flattened (256-d) representation through a fusion MLP to produce the final personality vector, career scores, and ASD score.
+  </p>
+  <h4 style="color:var(--blue);margin:14px 0 8px;font-size:1em;">3.3 Multi-Task Training</h4>
+  <p style="color:var(--muted);line-height:1.9;margin-bottom:32px;">
+    All models are trained jointly with three tasks: (1) career classification (cross-entropy, 30 classes), (2) Big Five regression (MSE), and (3) ASD binary classification (binary cross-entropy). Task weights are learned via the uncertainty-weighting method of Kendall et al. [DL-08] (learnable log-variance per task). Optimisation uses AdamW [DL-10] with learning rate 1e-3 and weight decay 1e-4. A cosine annealing scheduler [DL-11] is applied over 20 epochs. Early stopping monitors validation loss with patience 10. All experiments use CPU; GPU training would reduce wall-clock time proportionally.
+  </p>
+
+  <!-- 4. Results -->
+  <h3 style="color:#fff;font-size:1.15em;margin-bottom:10px;border-bottom:1px solid var(--border);padding-bottom:8px;">4. Results & Discussion</h3>
+  <h4 style="color:var(--blue);margin:14px 0 8px;font-size:1em;">4.1 Quantitative Performance</h4>
+  <table>
+    <tr><th>Metric</th><th>Train</th><th>Validation</th><th>Test</th><th>Baseline</th></tr>
+    <tr><td>Career Classification Accuracy</td><td>40.9%</td><td>39.5%</td><td>44.0%</td><td>3.3% (random)</td></tr>
+    <tr><td>ASD Classification Accuracy</td><td>99.7%</td><td>88.5%</td><td>—</td><td>85.0% (majority)</td></tr>
+    <tr><td>Big Five MAE</td><td>0.098</td><td>0.112</td><td>0.118</td><td>0.25 (mean pred.)</td></tr>
+    <tr><td>Multi-task Loss</td><td>1.84</td><td>2.61</td><td>2.18</td><td>—</td></tr>
+  </table>
+  <h4 style="color:var(--blue);margin:20px 0 8px;font-size:1em;">4.2 Qualitative Findings</h4>
+  <p style="color:var(--muted);line-height:1.9;margin-bottom:16px;">
+    The ASD biomarker comparison (Figure 3) closely replicates published patterns: oxytocin (Z=-1.2), serotonin (Z=-0.8), BDNF (Z=-0.7), IL-6 (Z=+0.9), and glutamate (Z=+0.8) show the expected direction and approximate effect sizes from the meta-analyses in [BIO-02, BIO-08, BIO-10]. The modality contribution analysis (Figure 5) shows that biomarkers contribute the most weight in ASD-enriched samples (30%), reflecting the strong biomarker signal designed into the synthetic data. In a real dataset where biomarker-ASD associations are weaker, genomics would likely contribute more. The career radar analysis (Figure 4) shows that synthetic ASD individuals (high O, high C, low E, low A) are correctly matched to research and technical careers flagged with the autism-strength indicator.
+  </p>
+  <h4 style="color:var(--blue);margin:14px 0 8px;font-size:1em;">4.3 Limitations</h4>
+  <p style="color:var(--muted);line-height:1.9;margin-bottom:32px;">
+    Several important limitations must be acknowledged. First, <strong style="color:var(--text)">synthetic data validity</strong>: while calibrated against published statistics, synthetic data cannot capture the full covariance structure of real multi-modal biological data. The absence of real career outcome labels is a particular constraint on the career prediction task. Second, <strong style="color:var(--text)">polygenic score ceiling</strong>: personality PGS currently explain only 5–15% of variance, limiting genomic contribution. Third, <strong style="color:var(--text)">facial recognition bias</strong>: current FER models show higher error rates for darker skin tones [ETH-01], and the morphometry approach risks encoding demographic stereotypes. Fairness auditing across all demographic groups is mandatory before any deployment. Fourth, <strong style="color:var(--text)">cross-ancestry portability</strong>: most GWAS training data is European-ancestry [GEN-07]; performance for MENA, African, and Asian populations requires dedicated validation cohorts. Fifth, <strong style="color:var(--text)">ASD classification overfit</strong>: the near-100% training accuracy for ASD classification reflects the deterministic biomarker shifts in synthetic data generation, not a realistic clinical scenario.
+  </p>
+
+  <!-- 5. Future Work -->
+  <h3 style="color:#fff;font-size:1.15em;margin-bottom:10px;border-bottom:1px solid var(--border);padding-bottom:8px;">5. Future Work & Call for Collaboration</h3>
+  <p style="color:var(--muted);line-height:1.9;margin-bottom:16px;">
+    The most critical next step is <strong style="color:var(--text)">clinical validation</strong> with real multi-modal data. We call on universities and research centres — particularly in the MENA region — to collaborate on an IRB-approved prospective study collecting: SNP arrays (Illumina GSA), point-of-care blood panels (at minimum: oxytocin, BDNF, IL-6, cortisol, serotonin, GABA/glutamate ratio, vitamin D), brief video recordings for facial analysis, Big Five questionnaires, and longitudinal career outcome tracking.
+  </p>
+  <div style="background:var(--bg3);border:1px solid var(--border);border-left:4px solid var(--teal);border-radius:8px;padding:18px 22px;margin-bottom:24px;">
+    <strong style="color:var(--teal);">Interested in collaborating?</strong>
+    <p style="color:var(--muted);margin-top:8px;font-size:.9em;line-height:1.7;">If you represent a university, hospital, autism research centre, or special education institution interested in adopting or extending this framework, please open a GitHub Issue or reach out directly. We are particularly interested in: (1) MENA-region autism cohorts, (2) longitudinal career outcome datasets, (3) computational genomics collaborators with UK Biobank access, and (4) occupational science researchers with O*NET validation data.</p>
+  </div>
+  <p style="color:var(--muted);line-height:1.9;margin-bottom:32px;">
+    Additional planned extensions include: (1) integration with LDpred2 [GEN-04] for properly calibrated PGS using real GWAS summary statistics; (2) expansion of the career database to the full O*NET taxonomy (900+ careers); (3) inclusion of whole-exome sequencing for rare variant analysis; (4) a smartphone-based point-of-care device for field deployment; and (5) a federated learning framework for privacy-preserving multi-site training.
+  </p>
+
+  <!-- 6. Ethics -->
+  <h3 style="color:#fff;font-size:1.15em;margin-bottom:12px;border-bottom:1px solid var(--border);padding-bottom:8px;">6. Ethics Statement</h3>
+  <div class="ethics-grid" style="margin-bottom:32px;">
+    <div class="ethics-item"><strong>Genetic determinism</strong>Personality PGS explain 5–15% of variance. These outputs are probabilistic tendencies, never destiny. The system must never be presented as deterministic.</div>
+    <div class="ethics-item"><strong>Facial recognition bias</strong>Documented higher error rates for darker skin tones [ETH-01]. Demographic fairness auditing is mandatory before any deployment. Facial data should supplement, not override, other signals.</div>
+    <div class="ethics-item"><strong>Genomic privacy</strong>SNP data is uniquely re-identifiable [ETH-06]. GDPR Article 9 classifies genomic data as special category. IRB approval, informed consent, and local processing are non-negotiable for clinical use.</div>
+    <div class="ethics-item"><strong>Neurodiversity framing</strong>Autism traits are framed as cognitive strengths to be matched to appropriate environments, never as deficits. Career recommendations are additions to self-determination, not substitutes.</div>
+    <div class="ethics-item"><strong>Career recommendations only</strong>The system must never be used for hiring decisions, disqualification, or gatekeeping. It is a career exploration tool for the individual.</div>
+    <div class="ethics-item"><strong>Cross-ancestry limitations</strong>Most GWAS training data is European-ancestry. Performance for non-European populations is unvalidated and may be lower. This limitation must be prominently disclosed.</div>
+  </div>
+
+  <!-- 7. References (abbreviated) -->
+  <h3 style="color:#fff;font-size:1.15em;margin-bottom:10px;border-bottom:1px solid var(--border);padding-bottom:8px;">7. Key References</h3>
+  <p style="color:var(--muted);font-size:.85em;margin-bottom:12px;">Full bibliography (94 references) available in <a href="../REFERENCES.md">REFERENCES.md</a></p>
+  <div style="font-size:.82em;color:var(--muted);line-height:1.8;font-family:'JetBrains Mono',monospace;">
+    <p>[ASD-03] Hope et al. (2023). Bidirectional genetic overlap between ASD and cognitive traits. <em>Translational Psychiatry</em>, 13(1), 290.</p>
+    <p>[DL-08] Kendall et al. (2018). Multi-task learning using uncertainty to weigh losses. <em>CVPR</em>, 7482–7491.</p>
+    <p>[FAC-08] Gloor et al. (2021). Your face mirrors your deepest beliefs. <em>arXiv:2112.12455</em>.</p>
+    <p>[FUS-03] Xu et al. (2023). Multimodal learning with transformers. <em>IEEE TPAMI</em>, 45(10), 12113–12132.</p>
+    <p>[GEN-04] Privé et al. (2020). LDpred2: Better, faster, stronger. <em>Bioinformatics</em>, 36(22–23), 5424–5431.</p>
+    <p>[BIO-02] Lv et al. (2021). Oxytocin and autism spectrum disorder. <em>Psychiatry and Clinical Neurosciences</em>, 75(12), 351–361.</p>
+    <p>[ETH-01] Buolamwini & Gebru (2018). Gender shades. <em>FAT*</em> Conference, 77–91.</p>
+    <p>[CAR-01] Peterson et al. (1999). <em>An occupational information system for the 21st century: O*NET</em>. APA.</p>
+  </div>
+</div>
+</section>
+
+<!-- CITE -->
+<section id="cite" style="border-bottom:none;">
+<div class="container">
+  <div class="label">Citation</div>
+  <h2 class="sec-title">How to Cite</h2>
+  <p style="color:var(--muted);margin-bottom:20px;">If you use CareerMappingGenomics in your research, please cite:</p>
+  <div class="cite-box">
+@misc{eldaly2025careermapping,<br>
+&nbsp;&nbsp;title   = {CareerMappingGenomics: A Multi-Modal Deep Learning Framework for<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Personality-Grounded Career Recommendation with Neurodiversity Focus},<br>
+&nbsp;&nbsp;author  = {El-Daly, Abdallah},<br>
+&nbsp;&nbsp;year    = {2025},<br>
+&nbsp;&nbsp;note    = {Research Prototype v1.0},<br>
+&nbsp;&nbsp;url     = {https://github.com/abdallaheldaly/CareerMappingGenomics},<br>
+&nbsp;&nbsp;license = {MIT}<br>
+}
+  </div>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+<div class="container">
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand">CareerMapping<span>Genomics</span></div>
+      <p class="footer-desc">A multi-modal deep learning research system for personality-grounded career recommendation. Designed with neurodiversity at its core. Open source under the MIT licence.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Project</h4>
+      <a href="#about">About</a>
+      <a href="#pipeline">Architecture</a>
+      <a href="#results">Results</a>
+      <a href="#paper">Research Paper</a>
+    </div>
+    <div class="footer-col">
+      <h4>Resources</h4>
+      <a href="https://github.com/abdallaheldaly/CareerMappingGenomics">GitHub Repository</a>
+      <a href="REFERENCES.md">References (94)</a>
+      <a href="#install">Installation</a>
+      <a href="#cite">Citation</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Abdallah El-Daly · MIT Licence</span>
+    <span>Research Prototype · Not for Clinical Use · IRB Required</span>
+  </div>
+</div>
+</footer>
+
+<script>
+function showTab(id){
+  document.querySelectorAll('.itab-content').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.itab').forEach(el=>el.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>

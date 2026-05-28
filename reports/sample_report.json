@@ -1,0 +1,279 @@
+{
+  "personality_profile": {
+    "Openness": {
+      "score": 0.389,
+      "level": "Moderate"
+    },
+    "Conscientiousness": {
+      "score": 0.628,
+      "level": "Moderate"
+    },
+    "Extraversion": {
+      "score": 0.345,
+      "level": "Moderate"
+    },
+    "Agreeableness": {
+      "score": 0.541,
+      "level": "Moderate"
+    },
+    "Neuroticism": {
+      "score": 0.564,
+      "level": "Moderate"
+    }
+  },
+  "asd_assessment": {
+    "probability_pct": 0.3,
+    "tier": "Neurotypical Profile"
+  },
+  "top_careers": [
+    {
+      "rank": 1,
+      "id": "C007",
+      "title": "Database Administrator",
+      "domain": "Technology",
+      "compatibility_pct": 90.7,
+      "education": "Bachelor's in CS or related field",
+      "description": "Manage and optimize databases. Systematic organization and procedural consistency are key strengths.",
+      "autism_strength": true,
+      "autism_advantages": [
+        "Structured thinking",
+        "Consistency in procedures",
+        "Detail-oriented query optimization"
+      ],
+      "trait_match": {
+        "O": 0.7689999938011169,
+        "C": 0.7480000257492065,
+        "E": 0.9950000047683716,
+        "A": 0.9789999723434448,
+        "N": 0.7160000205039978
+      }
+    },
+    {
+      "rank": 2,
+      "id": "C027",
+      "title": "Composer / Music Producer",
+      "domain": "Creative",
+      "compatibility_pct": 88.8,
+      "education": "Bachelor's in Music Composition or self-taught",
+      "description": "Create original musical works. Combines auditory pattern recognition with creative expression.",
+      "autism_strength": true,
+      "autism_advantages": [
+        "Perfect pitch patterns",
+        "Deep immersion in musical theory",
+        "Novel harmonic structures"
+      ],
+      "trait_match": {
+        "O": 0.4690000116825104,
+        "C": 0.9480000138282776,
+        "E": 0.8650000095367432,
+        "A": 0.9409999847412109,
+        "N": 0.8859999775886536
+      }
+    },
+    {
+      "rank": 3,
+      "id": "C012",
+      "title": "Graphic Designer",
+      "domain": "Creative",
+      "compatibility_pct": 79.9,
+      "education": "Bachelor's in Graphic Design or Fine Arts",
+      "description": "Create visual concepts to communicate ideas. High openness and aesthetic sensitivity are key.",
+      "autism_strength": false,
+      "autism_advantages": [
+        "Unique visual perspective",
+        "Intense focus on visual details",
+        "Original pattern creation"
+      ],
+      "trait_match": {
+        "O": 0.48899999260902405,
+        "C": 0.9480000138282776,
+        "E": 0.824999988079071,
+        "A": 0.890999972820282,
+        "N": 0.8159999847412109
+      }
+    },
+    {
+      "rank": 4,
+      "id": "C003",
+      "title": "Cybersecurity Analyst",
+      "domain": "Technology",
+      "compatibility_pct": 62.2,
+      "education": "Bachelor's + certifications (CISSP, CEH)",
+      "description": "Protect systems from threats. Requires meticulous attention to detail and systematic vulnerability analysis.",
+      "autism_strength": true,
+      "autism_advantages": [
+        "Rule-based thinking",
+        "Persistence in threat hunting",
+        "High attention to procedural detail"
+      ],
+      "trait_match": {
+        "O": 0.6690000295639038,
+        "C": 0.7480000257492065,
+        "E": 0.9950000047683716,
+        "A": 0.9390000104904175,
+        "N": 0.7559999823570251
+      }
+    },
+    {
+      "rank": 5,
+      "id": "C030",
+      "title": "Supply Chain Analyst",
+      "domain": "Business",
+      "compatibility_pct": 54.3,
+      "education": "Bachelor's in Supply Chain or Business",
+      "description": "Optimize supply chain processes. Systems thinking and attention to operational detail.",
+      "autism_strength": true,
+      "autism_advantages": [
+        "Systematic process optimization",
+        "Rule-based logistics thinking",
+        "Consistency in operational procedures"
+      ],
+      "trait_match": {
+        "O": 0.7689999938011169,
+        "C": 0.7480000257492065,
+        "E": 0.8450000286102295,
+        "A": 0.9210000038146973,
+        "N": 0.7160000205039978
+      }
+    },
+    {
+      "rank": 6,
+      "id": "C015",
+      "title": "Accountant / Auditor",
+      "domain": "Finance",
+      "compatibility_pct": 50.5,
+      "education": "Bachelor's in Accounting + CPA",
+      "description": "Maintain financial records and ensure compliance. Extreme precision and rule-adherence are core traits.",
+      "autism_strength": true,
+      "autism_advantages": [
+        "Rule-based financial compliance",
+        "Error detection",
+        "Consistent procedural accuracy"
+      ],
+      "trait_match": {
+        "O": 0.8389999866485596,
+        "C": 0.7080000042915344,
+        "E": 0.8949999809265137,
+        "A": 0.9210000038146973,
+        "N": 0.7160000205039978
+      }
+    },
+    {
+      "rank": 7,
+      "id": "C008",
+      "title": "Quality Assurance Engineer",
+      "domain": "Technology",
+      "compatibility_pct": 49.4,
+      "education": "Bachelor's in Engineering or CS",
+      "description": "Test and ensure software/product quality. Methodical thinking and thoroughness are defining traits.",
+      "autism_strength": true,
+      "autism_advantages": [
+        "Exhaustive test case generation",
+        "Pattern spotting in bugs",
+        "Procedural rigor"
+      ],
+      "trait_match": {
+        "O": 0.7889999747276306,
+        "C": 0.7080000042915344,
+        "E": 0.9649999737739563,
+        "A": 0.9610000252723694,
+        "N": 0.7160000205039978
+      }
+    },
+    {
+      "rank": 8,
+      "id": "C014",
+      "title": "Financial Analyst",
+      "domain": "Finance",
+      "compatibility_pct": 48.9,
+      "education": "Bachelor's in Finance or Economics",
+      "description": "Analyze financial data to guide investment decisions. Quantitative rigor and attention to financial detail.",
+      "autism_strength": false,
+      "autism_advantages": [
+        "Numerical pattern recognition",
+        "Systematic market analysis",
+        "Consistent methodology"
+      ],
+      "trait_match": {
+        "O": 0.7089999914169312,
+        "C": 0.777999997138977,
+        "E": 0.7950000166893005,
+        "A": 0.9610000252723694,
+        "N": 0.7360000014305115
+      }
+    },
+    {
+      "rank": 9,
+      "id": "C018",
+      "title": "Librarian / Archivist",
+      "domain": "Information",
+      "compatibility_pct": 41.4,
+      "education": "Master's in Library Science",
+      "description": "Organize, manage, and provide access to information resources.",
+      "autism_strength": true,
+      "autism_advantages": [
+        "Systematic cataloguing",
+        "Strong memory for classification systems",
+        "Orderly information management"
+      ],
+      "trait_match": {
+        "O": 0.6690000295639038,
+        "C": 0.777999997138977,
+        "E": 0.9649999737739563,
+        "A": 0.8610000014305115,
+        "N": 0.7160000205039978
+      }
+    },
+    {
+      "rank": 10,
+      "id": "C017",
+      "title": "Translator / Linguist",
+      "domain": "Communication",
+      "compatibility_pct": 36.6,
+      "education": "Bachelor's in Linguistics or Modern Languages",
+      "description": "Translate between languages with high precision. Deep pattern recognition in language structure.",
+      "autism_strength": true,
+      "autism_advantages": [
+        "Systematic grammar rule application",
+        "Exceptional memory for vocabulary",
+        "Attention to nuance"
+      ],
+      "trait_match": {
+        "O": 0.5889999866485596,
+        "C": 0.878000020980835,
+        "E": 0.9449999928474426,
+        "A": 0.8610000014305115,
+        "N": 0.7559999823570251
+      }
+    }
+  ],
+  "modality_pgs": {
+    "Openness_PGS": 0.598,
+    "Conscientiousness_PGS": 0.495,
+    "Extraversion_PGS": 0.651,
+    "Agreeableness_PGS": 0.288,
+    "Neuroticism_PGS": 0.646,
+    "Autism_PGS": 0.638,
+    "Intelligence_PGS": 0.811,
+    "Education_PGS": 0.389
+  },
+  "disclaimer": "This report is a research tool only. Personality polygenic scores explain 5\u201315% of trait variance. These results are probabilistic, not deterministic. Career recommendations should be considered alongside personal interests, education, experience, and professional guidance.",
+  "facial_emotion": {
+    "probabilities": {
+      "neutral": 0.15240800380706787,
+      "happy": 0.12384403496980667,
+      "sad": 0.12113414704799652,
+      "surprise": 0.2144903689622879,
+      "fear": 0.18942418694496155,
+      "disgust": 0.06859742850065231,
+      "anger": 0.1301017701625824
+    },
+    "dominant_emotion": "surprise"
+  },
+  "modality_contributions": {
+    "Genomics": 0.065,
+    "Facial": 0.057,
+    "Biomarkers": 0.869,
+    "Questionnaire": 0.009
+  }
+}
