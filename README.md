@@ -2,7 +2,7 @@
 
 **Multi-Modal Deep Learning for Personality-Grounded Career Recommendation with Neurodiversity Focus**
 
-[![CI](https://github.com/YOUR_USERNAME/CareerMappingGenomics/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/CareerMappingGenomics/actions)
+[![CI](https://github.com/abdallaheldaly/CareerMappingGenomics/actions/workflows/ci.yml/badge.svg)](https://github.com/abdallaheldaly/CareerMappingGenomics/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://python.org)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0-orange.svg)](https://pytorch.org)

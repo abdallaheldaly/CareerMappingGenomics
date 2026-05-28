@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Live Demo — CareerMappingGenomics</title>
+<base href="https://abdallaheldaly.github.io/CareerMappingGenomics/docs/"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'EB Garamond',serif;background:#05080f;color:#e2e8f0;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;}
+.card{background:#0d1220;border:1px solid #1e2a45;border-radius:16px;max-width:680px;width:100%;padding:48px 40px;text-align:center;}
+.icon{font-size:56px;margin-bottom:20px;}
+h1{font-size:2em;color:#fff;margin-bottom:12px;}
+p{color:#8899aa;line-height:1.8;margin-bottom:24px;font-size:1.05em;}
+pre{background:#0a0e1a;border:1px solid #1e2a45;border-radius:10px;padding:20px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:.82em;color:#4ECDC4;line-height:1.7;margin-bottom:24px;overflow-x:auto;}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:8px;font-size:.95em;font-family:'EB Garamond',serif;font-weight:600;cursor:pointer;transition:all .2s;border:none;text-decoration:none;margin:6px;}
+.btn-primary{background:#7C9EFF;color:#05080f;}
+.btn-primary:hover{background:#9bb4ff;}
+.btn-outline{background:none;border:1px solid #2a3a50;color:#e2e8f0;}
+.btn-outline:hover{border-color:#7C9EFF;color:#7C9EFF;}
+.divider{border:none;border-top:1px solid #1e2a45;margin:28px 0;}
+.tag{display:inline-block;background:#7C9EFF22;color:#7C9EFF;border:1px solid #7C9EFF44;border-radius:20px;padding:4px 14px;font-size:.8em;margin-bottom:20px;font-family:'JetBrains Mono',monospace;}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="icon">🎛️</div>
+  <div class="tag">Interactive Demo</div>
+  <h1>Run the Demo Locally</h1>
+  <p>CareerMappingGenomics is a deep learning system that requires Python and PyTorch. The fastest way to try it is with <strong style="color:#fff">Docker</strong> — no Python installation needed.</p>
+
+  <pre># One-command Docker demo (~30 seconds)
+git clone https://github.com/abdallaheldaly/CareerMappingGenomics.git
+cd CareerMappingGenomics
+docker build -t careermapping:v1 .
+docker run --rm -v $(pwd)/output:/app/output \
+  careermapping:v1 python main.py --quick</pre>
+
+  <p style="margin-bottom:16px;">Or launch the interactive REST API and explore it in your browser:</p>
+
+  <pre># Start the API server
+docker run --rm -p 8000:8000 careermapping:v1 python src/api/app.py
+# → Open: http://localhost:8000/docs</pre>
+
+  <hr class="divider"/>
+
+  <p style="font-size:.95em;">For the interactive visual explorer (no installation needed), open the <code>.jsx</code> files in <a href="https://claude.ai" target="_blank" style="color:#7C9EFF">Claude.ai</a> as artifacts:</p>
+  <ul style="text-align:left;color:#8899aa;font-size:.92em;line-height:2;margin:12px 0 24px 20px;">
+    <li><code>CareerMappingGenomics_UI.jsx</code> — full interactive data input &amp; career results</li>
+    <li><code>CareerMappingGenomics_SystemDesign.jsx</code> — system architecture explorer</li>
+  </ul>
+
+  <div>
+    <a class="btn btn-primary" href="https://github.com/abdallaheldaly/CareerMappingGenomics" target="_blank">★ View on GitHub</a>
+    <a class="btn btn-outline" href="index.html">← Back to Paper</a>
+  </div>
+</div>
+</body>
+</html>
