@@ -8,7 +8,7 @@
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0-orange.svg)](https://pytorch.org)
 
 > **Research Prototype v1.0** — Abdallah El-Daly, 2025  
-> 🌐 **Live Site:** https://abdallaheldaly.github.io/CareerMappingGenomics  
+> 🌐 **Live Site:** [https://abdallaheldaly.github.io/CareerMappingGenomics](https://abdallaheldaly.github.io/CareerMappingGenomics/docs/index.html)  
 > ⚠️ Not for clinical use. IRB approval required for human subject research.
 
 ---
