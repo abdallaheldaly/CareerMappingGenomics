@@ -32,6 +32,17 @@ Questionnaire (Big Five 32-d)    ──→  QuestionnaireEncoder (~5,000 params)
 
 ---
 
+## What's new in v1.1 (UI)
+
+Two new tabs in `CareerMappingGenomics_UI.jsx`, placed after **Pipeline**:
+
+- **👤 Face & Genetics** — schematic faces: Down syndrome features (numbered), identical/fraternal twins vs. unrelated, and a three-generation family with shared physical and behavioural traits.
+- **🌍 Gene × Environment** — how altitude (Everest), Arctic cold and hot-humid climates shape nose, lungs, blood and metabolism; genetic vs. environmental variance; nutrition, education, stress and culture (e.g. Egypt's Thanaweya Amma); and a proposed *Environmental Context* input vector.
+
+Faces are original vector illustrations, not photographs. Population-level adaptation is never evidence about an individual's ability or career.
+
+---
+
 ## Quick Start
 
 ### Option 1 — Docker (Recommended)

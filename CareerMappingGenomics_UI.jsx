@@ -224,6 +224,257 @@ function Radar({ values, size=180 }) {
 }
 
 // ─────────────────────────────────────────────
+// v1.1 · FACE & GENETICS + GENE × ENVIRONMENT
+// Original schematic illustrations — NOT photographs of real people.
+// To use licensed/consented photos, swap <Face .../> for <img src="..."/>.
+// ─────────────────────────────────────────────
+const CARD = { background:"#0d1220", border:"1px solid #1e2a45", borderRadius:12, padding:20, marginBottom:20 };
+const H2 = { color:"#fff", fontSize:20, margin:"30px 0 12px" };
+const P = { color:"#8899aa", fontSize:13, lineHeight:1.8, margin:"0 0 12px" };
+const ROW = { display:"flex", gap:14, flexWrap:"wrap", justifyContent:"center", margin:"8px 0 14px" };
+const Chip = ({ c="#7C9EFF", children }) => (
+  <span style={{ background:c+"22", border:`1px solid ${c}66`, color:c, borderRadius:14, padding:"3px 10px", fontSize:11, margin:"0 6px 6px 0", display:"inline-block" }}>{children}</span>
+);
+const Title = ({ k, color="#7C9EFF", title }) => (
+  <div>
+    <div style={{ fontSize:11, letterSpacing:3, color, textTransform:"uppercase", marginBottom:8 }}>{k}</div>
+    <h1 style={{ fontSize:28, color:"#fff", marginBottom:4 }}>{title}</h1>
+  </div>
+);
+
+function Face({ skin="#e0b48c", hair="#2b1d14", shirt="#2a4a6a", slant=0, gap=16, noseW=7, flat=0.2, headW=33, headH=43,
+  ear=1, brow=1.4, mouth=11, tongue=false, fold=false, vb="0 0 100 120", size=110, marks=[] }) {
+  const L = 50-headW, R = 50+headW, hy = 60-headH-18;
+  const eye = s => {
+    const cx = 50+s*gap, i = cx-s*8, o = cx+s*8, oy = 52-slant;
+    return (
+      <g key={s}>
+        <path d={`M${i},53 Q${cx},46 ${o},${oy} Q${cx},58 ${i},53Z`} fill="#fff" stroke="#3a2a20" strokeWidth=".8"/>
+        <circle cx={cx} cy={52-slant/3} r="2.6" fill="#3b2a1e"/>
+        {fold && <path d={`M${i},48 Q${i-s*3.5},53 ${i},58`} fill="none" stroke="#0004" strokeWidth="1.4"/>}
+        <line x1={i} y1="45" x2={o} y2={44-slant*0.6} stroke={hair} strokeWidth={brow} strokeLinecap="round"/>
+      </g>
+    );
+  };
+  return (
+    <svg viewBox={vb} style={{ width:size, maxWidth:"100%", height:"auto", display:"block", margin:"0 auto" }}>
+      <path d="M16,120 Q18,100 50,99 Q82,100 84,120Z" fill={shirt}/>
+      <rect x="42" y="94" width="16" height="12" fill={skin}/>
+      {[-1,1].map(s => <ellipse key={s} cx={50+s*(headW+1)} cy="62" rx={4*ear} ry={7*ear} fill={skin} stroke="#0003" strokeWidth=".6"/>)}
+      <ellipse cx="50" cy="60" rx={headW} ry={headH} fill={skin}/>
+      <path d={`M${L},58 C${L},${hy} ${R},${hy} ${R},58 C${R-5},34 ${L+5},34 ${L},58Z`} fill={hair}/>
+      {[-1,1].map(eye)}
+      {[-1,1].map(s => <path key={s} d={`M${50+s*2},54 Q${50+s*3},63 ${50+s*noseW},68`} fill="none" stroke="#0005" strokeWidth="1.1" opacity={1-flat}/>)}
+      <path d={`M${50-noseW},68 Q50,73 ${50+noseW},68`} fill="none" stroke="#0006" strokeWidth="1.2"/>
+      {[-1,1].map(s => <ellipse key={s} cx={50+s*noseW*0.5} cy="69.5" rx={noseW*0.28} ry="1.5" fill="#0006"/>)}
+      {tongue && <ellipse cx="50" cy="90" rx="3.4" ry="3.6" fill="#d46a6a"/>}
+      <path d={`M${50-mouth/2},85 Q50,89 ${50+mouth/2},85`} fill="none" stroke="#7a3b3b" strokeWidth="1.8" strokeLinecap="round"/>
+      {marks.map(m => (
+        <g key={m.n}>
+          <circle cx={m.x} cy={m.y} r="4.6" fill="#FFD166" stroke="#0a0e1a" strokeWidth=".8"/>
+          <text x={m.x} y={m.y+2.2} textAnchor="middle" fontSize="6" fontWeight="bold" fill="#0a0e1a">{m.n}</text>
+        </g>
+      ))}
+    </svg>
+  );
+}
+
+const FaceCard = ({ label, sub, w=118, border="#1e2a45", ...f }) => (
+  <div style={{ textAlign:"center", width:w+16 }}>
+    <div style={{ background:"#0a0e1a", border:`1px solid ${border}`, borderRadius:10, padding:6 }}><Face size={w} {...f}/></div>
+    <div style={{ fontSize:12, color:"#e2e8f0", marginTop:6, fontWeight:"bold" }}>{label}</div>
+    {sub && <div style={{ fontSize:10, color:"#8899aa" }}>{sub}</div>}
+  </div>
+);
+
+// ───────── TAB: FACE & GENETICS ─────────
+const DS_MARKS = [{n:1,x:76,y:43},{n:2,x:47,y:46},{n:3,x:50,y:60},{n:4,x:9,y:52},{n:5,x:67,y:91},{n:6,x:50,y:18}];
+const DS_FEATS = [
+  "Upslanting eye openings (palpebral fissures)",
+  "Epicanthal fold at the inner eye corner",
+  "Flat nasal bridge and small nose",
+  "Small, low-set, rounded ears",
+  "Small mouth; tongue may look larger or rest forward (low muscle tone)",
+  "Shorter, rounder head with a flat back (brachycephaly)",
+];
+const TW = { skin:"#d9a679", hair:"#3a2414", noseW:8.5, brow:2.2, gap:16, slant:1, flat:0.3 };
+
+function FaceGenesTab() {
+  return (
+    <div style={{ maxWidth:920, margin:"0 auto", padding:"36px 32px" }}>
+      <Title k="Modality 2 · Facial Genetics" color="#FFD166" title="The Face as a Genetic Readout"/>
+      <p style={P}>Facial shape is built by hundreds of genes during development, so strongly genetic conditions leave recognisable patterns, and relatives share features. This tab shows the clearest example (Down syndrome), then genetically similar people — twins and families — and why similarity in face and behaviour is never <em>only</em> genes.</p>
+
+      {/* DOWN SYNDROME */}
+      <h2 style={H2}>1 · Down syndrome (trisomy 21)</h2>
+      <div style={{ ...CARD, borderTop:"3px solid #FFD166" }}>
+        <div style={{ display:"flex", gap:24, flexWrap:"wrap", alignItems:"center" }}>
+          <div style={ROW}>
+            <FaceCard label="Typical" sub="reference schematic" flat={0.2}/>
+            <FaceCard label="Down syndrome" sub="numbered features →" border="#FFD166" skin="#e3b894" slant={3} gap={15} noseW={6.3} flat={0.85}
+              ear={0.75} fold tongue mouth={9} headW={34} headH={41} marks={DS_MARKS}/>
+          </div>
+          <div style={{ flex:1, minWidth:240 }}>
+            {DS_FEATS.map((f,i)=>(
+              <div key={i} style={{ display:"flex", gap:8, marginBottom:7, fontSize:12, color:"#c8d4e0" }}>
+                <span style={{ background:"#FFD166", color:"#0a0e1a", borderRadius:"50%", width:18, height:18, display:"inline-flex", alignItems:"center", justifyContent:"center", fontSize:10, fontWeight:"bold", flexShrink:0 }}>{i+1}</span>{f}
+              </div>
+            ))}
+            <div style={{ fontSize:11, color:"#8899aa", marginTop:6 }}>Also common: Brushfield spots (pale iris specks), single palmar crease, low muscle tone.</div>
+          </div>
+        </div>
+        <div style={{ marginTop:12 }}>
+          <Chip c="#FFD166">Extra copy of chromosome 21</Chip><Chip c="#FFD166">≈ 1 in 700 births</Chip>
+          <Chip c="#4ECDC4">Life expectancy ≈ 25 yrs (1983) → ≈ 60 yrs today</Chip>
+        </div>
+        <p style={{ ...P, marginBottom:0 }}><strong style={{color:"#e2e8f0"}}>Same genome, different outcomes.</strong> The cause is 100% genetic, yet the jump in life expectancy came from heart surgery, early intervention, schooling and inclusion — environment, not genes. Features vary widely between individuals; a face never defines ability, personality or career, and many people with Down syndrome study, work and live independently or with support. It is not the same as autism, though the two can co-occur. AI trained on facial photos can flag many genetic syndromes (e.g. DeepGestalt, Nature Medicine 2019) — a clinical-screening use, not a way to judge a person.</p>
+      </div>
+
+      {/* TWINS */}
+      <h2 style={H2}>2 · Same genes → similar faces and traits</h2>
+      <div style={CARD}>
+        <div style={ROW}>
+          <FaceCard label="Twin A" sub="identical · same genome" {...TW}/>
+          <FaceCard label="Twin B" sub="identical · same genome" {...TW} mouth={12.5} shirt="#7a3b3b"/>
+          <FaceCard label="Sibling" sub="fraternal · ~50% variants shared" {...TW} noseW={7.5} brow={1.7} gap={17.5} slant={0} hair="#4a2c18" shirt="#3a6a4a"/>
+          <FaceCard label="Unrelated" sub="no recent kinship" skin="#f0cba5" hair="#8a5a2a" noseW={5.8} brow={1.1} gap={18} slant={-1} headW={31} flat={0.1} ear={0.9} shirt="#5a4a7a"/>
+        </div>
+        <Chip c="#FFD166">Face resemblance: identical twins ≫ fraternal &gt; unrelated</Chip>
+        <Chip c="#7C9EFF">Big Five correlation ≈ 0.5 (identical) vs ≈ 0.25 (fraternal)</Chip>
+        <p style={{ ...P, marginBottom:0 }}>Typical twin-study values (approximate). Identical twins are never identical in personality: roughly half of the variation comes from unique experiences, chance and epigenetic drift.</p>
+      </div>
+
+      {/* FAMILY */}
+      <div style={CARD}>
+        <div style={{ fontSize:13, color:"#FFD166", fontWeight:"bold", marginBottom:6 }}>A family line — three generations</div>
+        <div style={ROW}>
+          <FaceCard label="Grandfather" skin="#d2a070" hair="#b8bcc4" noseW={9} brow={2.4} ear={1.15} headW={35} headH={44} flat={0.3} shirt="#4a4a5a"/>
+          <FaceCard label="Mother" skin="#d9a679" hair="#2a1a10" noseW={8.5} brow={2} ear={1.05} flat={0.3} shirt="#7a3b6a"/>
+          <FaceCard label="Child" skin="#dfae80" hair="#2a1a10" noseW={8} brow={1.7} headW={30} headH={38} gap={15} flat={0.3} shirt="#2a6a6a"/>
+        </div>
+        <div><span style={{ fontSize:11, color:"#8899aa" }}>Shared physical: </span><Chip c="#FFD166">strong brow</Chip><Chip c="#FFD166">broad nose base</Chip><Chip c="#FFD166">larger ears</Chip></div>
+        <div><span style={{ fontSize:11, color:"#8899aa" }}>Shared behaviour: </span><Chip c="#4ECDC4">reserved in groups</Chip><Chip c="#4ECDC4">detail-focused</Chip><Chip c="#4ECDC4">persistent</Chip><Chip c="#7C9EFF">career echo: engineer → engineer → ?</Chip></div>
+        <p style={{ ...P, marginBottom:0 }}>Caution: relatives share <em>genes and</em> a home, diet, language and expectations. A family "career echo" mixes inherited aptitudes with role-modelling and pressure. Twin-reared-apart and adoption studies are what separate the two — see the next tab.</p>
+      </div>
+
+      <div style={{ background:"#1a0d0d", border:"1px solid #FF6B6B44", borderRadius:10, padding:16 }}>
+        <div style={{ fontSize:12, color:"#FF6B6B", fontWeight:"bold", marginBottom:6 }}>⚠ Face ≠ destiny</div>
+        <p style={{ ...P, marginBottom:0 }}>Detecting a chromosomal syndrome is very different from inferring personality or career from face shape, which is not valid at the individual level. Treat the FaceGenome-CNN face→Big Five signal as exploratory: it is confounded by ancestry, age, expression, grooming and culture. Real photographs require informed consent and licensing, which is why these are schematic drawings.</p>
+      </div>
+    </div>
+  );
+}
+
+// ───────── TAB: GENE × ENVIRONMENT ─────────
+const ENVS = [
+  { id:"high", icon:"🏔️", name:"High altitude", where:"Everest · Tibet · Andes", noseW:6.3, nose:"Narrower — thin, cold, dry air is warmed and humidified",
+    body:["Lungs & breathing: Tibetans breathe faster at rest and keep blood flowing well; Andeans have larger chest and lung volumes","Blood: Tibetans keep haemoglobin relatively low (EPAS1 variant); Andeans raise it — two different solutions","Muscle: Sherpa muscle mitochondria use oxygen more efficiently"],
+    mind:["Chronic low oxygen can impair attention and memory in people not adapted to it","Weather-reading, pacing and route-finding are learned from childhood — practice, not genes alone"],
+    work:["Mountain guiding & porter work","Herding & terrace farming","Expedition logistics, altitude-medicine research"] },
+  { id:"arctic", icon:"🧊", name:"Arctic cold", where:"Inuit · Siberia · Northern Scandinavia", noseW:5.5, nose:"Narrow, long passages — warm freezing air before the lungs",
+    body:["Compact bodies and shorter limbs lose less heat (Bergmann's & Allen's rules)","Fat-handling gene variants (FADS, CPT1A) fit a marine, high-fat diet; basal metabolic rate tends to be higher","Cold-adapted blood flow keeps hands and face working"],
+    mind:["Long dark winters shift sleep, mood and vitamin D — seasonal low mood is common","Wayfinding and spatial memory are cultural knowledge passed on through apprenticeship"],
+    work:["Hunting, fishing, ice & weather guiding","Remote-community health, climate and wildlife monitoring","Energy & mining logistics"] },
+  { id:"tropic", icon:"🌴", name:"Hot-humid tropics", where:"Equatorial Africa · South-East Asia", noseW:9.5, nose:"Wider nostrils — no need to warm the air; heat escapes easily",
+    body:["Leaner, longer limbs shed heat; sweating is highly efficient","Disease pressure shapes genes: sickle-cell trait and G6PD variants protect against malaria — environment selecting genes","Shorter nasal passages suit warm, humid air"],
+    mind:["Heat stress and infection burden shape sleep, energy and school attendance","Daily rhythm and social life organise around the cooler hours"],
+    work:["Agriculture & fisheries","Tropical medicine & vector-control research","Tourism & hospitality"] },
+];
+const VAR = [["Height (well-nourished populations)",80],["Adult cognitive ability",60],["Big Five personality",40],["Vocational interests",40]];
+const LEARNED = [
+  ["🍞","Prenatal nutrition","Dutch Hunger Winter (1944–45): people exposed in the womb show altered DNA methylation and higher adult obesity and metabolic risk."],
+  ["🧂","Iodine & nutrients","Severe iodine deficiency lowers average cognitive scores across whole regions — fixed by iodised salt, with no genetic change."],
+  ["📚","Education & literacy","Learning to read reshapes visual-word areas of the brain; schooling raises measured cognitive scores (Flynn effect)."],
+  ["🚕","Occupation shapes the brain","London taxi drivers who memorised the city show enlarged posterior hippocampi (Maguire, 2000)."],
+  ["😰","Chronic stress","Prolonged adversity dysregulates cortisol and inflammation, affecting attention, mood and sleep."],
+  ["🏫","Culture & expectations","Norms decide which careers feel possible. In Egypt, the Thanaweya Amma score largely assigns students to faculties — a funnel that can override trait fit."],
+];
+const ENV_BM = [["Vitamin D","sunlight · latitude · clothing"],["Omega-3","diet"],["Cortisol","chronic stress · sleep"],["BDNF","exercise · sleep"],["hsCRP / IL-6","infection · pollution · obesity"],["Zinc · B12 · Folate","nutrition"]];
+
+function EnvironmentTab() {
+  const [sel, setSel] = useState("high");
+  const e = ENVS.find(x => x.id === sel);
+  const Col = ({ t, c, items }) => (
+    <div style={{ background:"#0a0e1a", borderRadius:8, padding:12, borderTop:`2px solid ${c}` }}>
+      <div style={{ fontSize:11, color:c, fontWeight:"bold", marginBottom:6 }}>{t}</div>
+      {items.map((s,i)=><div key={i} style={{ fontSize:12, color:"#c8d4e0", lineHeight:1.6, marginBottom:6 }}>• {s}</div>)}
+    </div>
+  );
+  return (
+    <div style={{ maxWidth:920, margin:"0 auto", padding:"36px 32px" }}>
+      <Title k="Beyond the Genome" color="#4ECDC4" title="Gene × Environment × Culture"/>
+      <p style={P}>Biology is not only inherited. Where a person grows up — altitude, climate, food, schooling, stress, culture — shapes their body (even internal organs), their brain and behaviour, and the careers that are open to them.</p>
+      <div style={{ ...CARD, display:"flex", alignItems:"center", gap:8, flexWrap:"wrap", justifyContent:"center" }}>
+        {[["🧬 Genes","#7C9EFF"],["🌍 Environment","#4ECDC4"],["🕌 Culture","#FFD166"]].map(([t,c])=><Chip key={t} c={c}>{t}</Chip>)}
+        <span style={{ color:"#7C9EFF" }}>→</span><Chip c="#FF6B6B">🫁 Body (organs, physiology)</Chip>
+        <span style={{ color:"#7C9EFF" }}>→</span><Chip c="#C77DFF">🧠 Mind & behaviour</Chip>
+        <span style={{ color:"#7C9EFF" }}>→</span><Chip c="#FFD166">💼 Career</Chip>
+      </div>
+
+      <h2 style={H2}>1 · Living in different places</h2>
+      <div style={{ display:"flex", gap:8, flexWrap:"wrap", marginBottom:14 }}>
+        {ENVS.map(x=>(
+          <button key={x.id} onClick={()=>setSel(x.id)} style={{ padding:"8px 16px", borderRadius:20, cursor:"pointer", fontFamily:"inherit", fontSize:13,
+            background: sel===x.id?"#4ECDC422":"#0d1220", color: sel===x.id?"#4ECDC4":"#8899aa", border:`1px solid ${sel===x.id?"#4ECDC4":"#1e2a45"}` }}>{x.icon} {x.name}</button>
+        ))}
+      </div>
+      <div style={{ ...CARD, borderTop:"3px solid #4ECDC4" }}>
+        <div style={{ fontSize:16, color:"#fff", fontWeight:"bold" }}>{e.icon} {e.name} <span style={{ fontSize:12, color:"#8899aa", fontWeight:"normal" }}>· {e.where}</span></div>
+        <div style={ROW}>
+          {ENVS.map(x=>(
+            <div key={x.id} style={{ width:150, textAlign:"center", opacity: x.id===sel?1:0.45 }}>
+              <div style={{ background:"#0a0e1a", border:`1px solid ${x.id===sel?"#4ECDC4":"#1e2a45"}`, borderRadius:8, padding:4 }}>
+                <Face vb="32 54 36 24" size={140} noseW={x.noseW} flat={0.3}/></div>
+              <div style={{ fontSize:10, color:"#8899aa", marginTop:3 }}>{x.icon} nostril width</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ fontSize:12, color:"#4ECDC4", textAlign:"center", marginBottom:14 }}>Nose: {e.nose}</div>
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(240px, 1fr))", gap:12 }}>
+          <Col t="🫁 INSIDE THE BODY" c="#FF6B6B" items={e.body}/>
+          <Col t="🧠 MIND & BEHAVIOUR" c="#C77DFF" items={e.mind}/>
+          <Col t="💼 CAREER NICHES" c="#FFD166" items={e.work}/>
+        </div>
+      </div>
+      <p style={P}><strong style={{color:"#e2e8f0"}}>Reality check:</strong> nose width tracks temperature and humidity (cold-dry → narrower, hot-humid → wider; Zaidi et al., 2017), not altitude itself. At altitude the adaptation lives in lungs, blood and vessels — invisible from the face. These are population averages with huge individual overlap: never evidence about one person's ability or career.</p>
+
+      <h2 style={H2}>2 · How much is genes, how much is environment?</h2>
+      <div style={CARD}>
+        {VAR.map(([n,g])=>(
+          <div key={n} style={{ marginBottom:12 }}>
+            <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#c8d4e0", marginBottom:3 }}><span>{n}</span><span style={{ color:"#8899aa" }}>≈ {g}% genetic · {100-g}% environment</span></div>
+            <div style={{ display:"flex", height:10, borderRadius:5, overflow:"hidden" }}>
+              <div style={{ width:`${g}%`, background:"#7C9EFF" }}/><div style={{ width:`${100-g}%`, background:"#4ECDC4" }}/>
+            </div>
+          </div>
+        ))}
+        <Chip c="#7C9EFF">■ Genetic</Chip><Chip c="#4ECDC4">■ Environment (nutrition, schooling, culture, chance)</Chip>
+        <p style={{ ...P, marginBottom:0 }}>Rough twin-study estimates. Heritability describes a population in a given setting — it changes with conditions (height is less heritable where malnutrition is common) and says nothing certain about one person.</p>
+      </div>
+
+      <h2 style={H2}>3 · Environments that reshape body and brain</h2>
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(270px, 1fr))", gap:12, marginBottom:20 }}>
+        {LEARNED.map(([i,t,d])=>(
+          <div key={t} style={{ background:"#0d1220", border:"1px solid #1e2a45", borderRadius:10, padding:14 }}>
+            <div style={{ fontSize:13, color:"#fff", fontWeight:"bold", marginBottom:4 }}>{i} {t}</div>
+            <div style={{ fontSize:12, color:"#8899aa", lineHeight:1.6 }}>{d}</div>
+          </div>
+        ))}
+      </div>
+
+      <h2 style={H2}>4 · What this means for CareerMappingGenomics</h2>
+      <div style={{ ...CARD, borderLeft:"4px solid #4ECDC4" }}>
+        <div style={{ fontSize:12, color:"#4ECDC4", fontWeight:"bold", marginBottom:8 }}>Many of the 80 biomarkers already carry environmental signal</div>
+        {ENV_BM.map(([m,s])=><Chip key={m} c="#4ECDC4">{m} ← {s}</Chip>)}
+        <div style={{ fontSize:12, color:"#FFD166", fontWeight:"bold", margin:"12px 0 8px" }}>Proposed 5th input: Environmental Context vector</div>
+        {["altitude_m","mean_temp_c","humidity_pct","diet_pattern","education_years","ses_index","urban_rural","cultural_expectation","stress_exposure"].map(k=><code key={k} style={{ background:"#0a0e1a", color:"#7C9EFF", fontSize:11, padding:"3px 8px", borderRadius:4, margin:"0 6px 6px 0", display:"inline-block" }}>{k}</code>)}
+        <p style={{ ...P, margin:"8px 0 0" }}>Use it as context to calibrate predictions — never to infer ability. Audit for proxy bias: environment variables can stand in for ethnicity or class, and the same score means different things in different settings.</p>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
 // MAIN APP
 // ─────────────────────────────────────────────
 export default function App() {
@@ -249,6 +500,8 @@ export default function App() {
   const tabs = [
     { id:"overview",    label:"📖 Overview" },
     { id:"pipeline",    label:"⚙️ Pipeline" },
+    { id:"faces",       label:"👤 Face & Genetics" },
+    { id:"environment", label:"🌍 Gene × Environment" },
     { id:"vitals",      label:"🩸 Vital Indicators" },
     { id:"input",       label:"🎛️ Data Input" },
     { id:"results",     label:"📊 Results" },
@@ -418,6 +671,9 @@ export default function App() {
             </div>
           </div>
         )}
+
+        {tab==="faces" && <FaceGenesTab />}
+        {tab==="environment" && <EnvironmentTab />}
 
         {/* ─── VITAL INDICATORS ─── */}
         {tab==="vitals" && (
